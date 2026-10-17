@@ -14,13 +14,13 @@ import { esc, parseBlock } from "./util";
  *
  * `me:` names the speaker drawn on the right (default: the first speaker).
  * `colors: Claude=orange, Vish=blue` sets bubble colors: orange, red, blue,
- * green, purple, gray, accent, ink, or any CSS color. Colors are drawn as a
- * pale tint with colored text; `ink` is the theme's text color as the bubble
- * (near-black in light mode, flipped in dark). Defaults: `me` ink, Claude
- * orange, everyone else gray.
+ * green, purple, gray, accent, or any CSS color, drawn as a solid bubble with
+ * white text. `outline` is a page-colored bubble with a thin outline and normal
+ * text; `ink` is a bubble in the theme's text color. Defaults: `me` outline,
+ * Claude orange, everyone else gray.
  */
 const PALETTE: Record<string, string> = {
-  orange: "#d97757", // Anthropic's Claude orange
+  orange: "#e0876a", // a lighter take on Anthropic's Claude orange (#d97757)
   red: "#c2463d",
   blue: "#3b6fb6",
   green: "#3f8a5b",
@@ -29,6 +29,7 @@ const PALETTE: Record<string, string> = {
   grey: "#6b6f76",
   accent: "var(--mig-accent)",
   ink: "ink",
+  outline: "outline",
 };
 
 function parseColors(v: string | undefined): Map<string, string> {
@@ -77,7 +78,7 @@ export function renderChat(source: string): string {
   const me = opts.me || msgs.find((m) => m.who)?.who || "";
   const colors = parseColors(opts.colors);
   const colorOf = (who: string) =>
-    colors.get(who.toLowerCase()) ?? (who === me ? PALETTE.ink : /^claude\b/i.test(who) ? PALETTE.orange : PALETTE.gray);
+    colors.get(who.toLowerCase()) ?? (who === me ? PALETTE.outline : /^claude\b/i.test(who) ? PALETTE.orange : PALETTE.gray);
   let html = '<div class="mig mig-chat">';
   let prev = "";
   for (const m of msgs) {
@@ -87,7 +88,10 @@ export function renderChat(source: string): string {
     html += `<div class="mig-msg${mine ? " mig-me" : ""}">`;
     if (m.who && m.who !== prev) html += `<div class="mig-who">${esc(m.who)}</div>`;
     const c = colorOf(m.who);
-    html += c === "ink" ? `<div class="mig-bubble is-ink">${text}</div></div>` : `<div class="mig-bubble" style="--bubble:${esc(c)}">${text}</div></div>`;
+    html +=
+      c === "ink" || c === "outline"
+        ? `<div class="mig-bubble is-${c}">${text}</div></div>`
+        : `<div class="mig-bubble" style="--bubble:${esc(c)}">${text}</div></div>`;
     prev = m.who;
   }
   if (opts.caption) html += `<div class="mig-caption">${renderInline(opts.caption)}</div>`;

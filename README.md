@@ -98,7 +98,7 @@ Examples past `show` sit behind a "Show N more" button.
 
 ```chat
 me: Vish
-colors: Claude=orange
+colors: Claude=orange, Vish=outline
 ---
 Vish: one hot encoding works for as many tokens as you have…
 Claude: You're right to be concerned about efficiency…
@@ -106,10 +106,11 @@ Claude: You're right to be concerned about efficiency…
 ```
 
 `me:` is drawn on the right (default: the first speaker). Bubble colors:
-`colors: Claude=orange, Vish=ink, Bob=#2f6f4e` with orange (Anthropic's
-`#d97757`), red, blue, green, purple, gray, accent, ink, or any CSS color.
-Colors draw as a pale tint with colored text; `ink` uses the theme's text color
-as the bubble. By default `me` is ink, Claude orange and everyone else gray. The
+`colors: Claude=orange, Vish=outline, Bob=#2f6f4e` with orange (a lighter
+take on Anthropic's `#d97757`), red, blue, green, purple, gray, accent, or any
+CSS color, drawn solid with white text. `outline` is a page-colored bubble with
+a thin outline; `ink` uses the theme's text color as the bubble. By default
+`me` is outline, Claude orange and everyone else gray. The
 `---` line is optional here: only `me`, `colors` and `caption` count as options.
 
 ### `manifold-steer`

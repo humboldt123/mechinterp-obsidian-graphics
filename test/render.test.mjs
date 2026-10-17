@@ -50,17 +50,17 @@ test("feature card logits and hidden extras", () => {
 
 test("chat: speakers, continuation, me on the right", () => {
   const html = renderBlock("chat", "me: Vish\n---\nVish: hi\nClaude: hello\n  more\nClaude: again", ctx);
-  assert.match(html, /mig-msg mig-me"><div class="mig-who">Vish<\/div><div class="mig-bubble is-ink">hi</);
+  assert.match(html, /mig-msg mig-me"><div class="mig-who">Vish<\/div><div class="mig-bubble is-outline">hi</);
   assert.match(html, /hello<br>more/);
   assert.equal((html.match(/mig-who/g) || []).length, 2);
 });
 
 test("chat colors: Claude orange by default, named and hex overrides", () => {
   const def = renderBlock("chat", "Vish: a\nClaude: b\nBob: c", ctx);
-  assert.match(def, /--bubble:#d97757">b</);
+  assert.match(def, /--bubble:#e0876a">b</);
   assert.match(def, /--bubble:#6b6f76">c</);
   const set = renderBlock("chat", "colors: Claude=red, Bob=#123456, Vish=x;y\n---\nVish: a\nClaude: b\nBob: c", ctx);
   assert.match(set, /--bubble:#c2463d">b</);
   assert.match(set, /--bubble:#123456">c</);
-  assert.match(set, /mig-bubble is-ink">a</);
+  assert.match(set, /mig-bubble is-outline">a</);
 });
