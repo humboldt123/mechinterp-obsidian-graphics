@@ -204,9 +204,11 @@
 .mig-bubble {
   padding: 8px 14px;
   border-radius: 18px 18px 18px 4px;
-  background: var(--mig-border);
+  background: var(--bubble, #6b6f76);
+  color: #fff;
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.mig-me .mig-bubble { border-radius: 18px 18px 4px 18px; background: var(--mig-accent); color: var(--mig-bg); }
-.mig-me .mig-bubble a { color: inherit; text-decoration: underline; }
+.mig-me .mig-bubble { border-radius: 18px 18px 4px 18px; }
+.mig-bubble a { color: inherit; text-decoration: underline; }
+.mig-bubble .mig-mono { background: rgb(0 0 0 / 0.15); border-radius: 4px; padding: 0 4px; }

@@ -98,13 +98,18 @@ Examples past `show` sit behind a "Show N more" button.
 
 ```chat
 me: Vish
+colors: Claude=orange
 ---
 Vish: one hot encoding works for as many tokens as you have…
 Claude: You're right to be concerned about efficiency…
   an indented line continues the previous message
 ```
 
-`me:` is drawn on the right (default: the first speaker).
+`me:` is drawn on the right (default: the first speaker). Bubble colors:
+`colors: Claude=orange, Vish=blue, Bob=#2f6f4e` with orange (Anthropic's
+`#d97757`), red, blue, green, purple, gray, accent, or any CSS color. By default
+Claude is orange, `me` is the theme accent and everyone else is gray. The
+`---` line is optional here: only `me`, `colors` and `caption` count as options.
 
 ### `manifold-steer`
 
