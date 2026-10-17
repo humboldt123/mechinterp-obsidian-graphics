@@ -7,7 +7,7 @@ plugin the blocks degrade to readable code, so notes stay plain Markdown.
 | Block | What it draws | Modelled on |
 | --- | --- | --- |
 | `neuron-text` | Text with per-token activations, reveal/swap buttons, comma meters | Goodfire's "pr" and Colorado figures, Anthropic's token highlighting |
-| `neuron-map` | Every strong firing of a neuron on a radial map; hover cards, group highlighting, legend, strength bars | Goodfire's "Five neurons in Qwen3-32B" |
+| `neuron-map` | Every strong firing of a neuron on a radial map; hover cards, group highlighting, optional legend and strength bars | Goodfire's "Five neurons in Qwen3-32B" |
 | `feature-card` | Feature dashboard: activation histogram, logit effects, top/subsampled activations | Anthropic's feature browser |
 | `manifold-steer` | Two 3D spaces (behavior and activation), manifold vs. linear steering paths, output probabilities along the path | Goodfire's "Steering Along Manifolds" |
 
@@ -60,15 +60,17 @@ subtitle: Qwen3-32B · layer 55 · neuron 11703
 highlight: python.*tornado|tornado.*(server|module|code)
 highlight-label: are about the Python Tornado library
 pin: 3690
-legend: full
-strength: true
+legend: none
+strength: false
 height: 560
 caption: …
 ```
 
 `highlight` is a regex over each firing's note (case-insensitive, or write
 `/pattern/flags`); matches are drawn dark. `pin` opens one firing's card.
-`legend: full | short | none`. `contexts` is optional and loads on first hover.
+`legend: full | short | none` (default none; the rim already names each
+category) and `strength: true` add a category key and a stacked bar of
+categories per activation band. `contexts` is optional and loads on first hover.
 
 ### `feature-card`
 

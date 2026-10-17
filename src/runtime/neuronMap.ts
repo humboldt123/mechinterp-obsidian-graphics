@@ -75,6 +75,8 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
     pinned = opts.pin !== undefined && opts.pin !== "" ? Number(opts.pin) : -1,
     iso = -1;
   let base: HTMLCanvasElement | null = null;
+  // The pinned card opens once the map has a size to place it against.
+  let pinPending = pinned >= 0;
   let grid: Map<number, number[]> | null = null;
   const CELL = 10;
 
@@ -122,12 +124,12 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
   }
 
   function drawBase(w: number, hgt: number) {
-    const d = window.devicePixelRatio || 1;
+    const [sx, sy] = sc.scale();
     base = document.createElement("canvas");
-    base.width = Math.round(w * d);
-    base.height = Math.round(hgt * d);
+    base.width = sc.canvas.width;
+    base.height = sc.canvas.height;
     const x = base.getContext("2d")!;
-    x.setTransform(d, 0, 0, d, 0, 0);
+    x.setTransform(sx, 0, 0, sy, 0, 0);
     const z = R / 230;
     D.wedges.forEach((wd, j) => {
       x.beginPath();
@@ -215,6 +217,10 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
       drawBase(w, hgt);
     }
     ctx.drawImage(base!, 0, 0, w, hgt);
+    if (pinPending) {
+      pinPending = false;
+      setTimeout(() => showTip(pinned));
+    }
     const focus = pinned >= 0 ? pinned : hov;
     const z = Math.max(1, R / 230);
     if (nLit && focus < 0) overlay(ctx, w, hgt, (i) => lit[i] === 1, z, 0.5);
@@ -297,10 +303,7 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
     tip.style.top = y + "px";
   }
 
-  const pos = (e: PointerEvent | MouseEvent) => {
-    const r = sc.canvas.getBoundingClientRect();
-    return [e.clientX - r.left, e.clientY - r.top] as const;
-  };
+  const pos = (e: MouseEvent) => sc.point(e);
   sc.canvas.addEventListener("pointermove", (e) => {
     if (pinned >= 0 || e.pointerType === "touch") return;
     const [x, y] = pos(e);
@@ -327,11 +330,16 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
   });
 
   // Legend: hover a story to isolate it.
-  const legendMode = off(opts.legend) ? "none" : opts.legend || "full";
+  if (nLit) {
+    const note = document.createElement("div");
+    note.className = "mig-lit-note";
+    note.innerHTML = `<i></i>${nLit} firings ${opts["highlight-label"] ? esc(opts["highlight-label"]) : `match <code>${esc(opts.highlight!)}</code>`}`;
+    stage.appendChild(note);
+  }
+  const legendMode = !opts.legend || off(opts.legend) ? "none" : opts.legend;
   if (legendMode !== "none") {
     const lg = document.createElement("div");
     lg.className = `mig-legend mig-legend-${legendMode}`;
-    if (nLit) lg.innerHTML += `<div class="mig-lit-note"><i></i>${nLit} firings ${opts["highlight-label"] ? esc(opts["highlight-label"]) : `match <code>${esc(opts.highlight!)}</code>`}</div>`;
     D.cats.forEach((c, j) => {
       const item = document.createElement("div");
       item.className = "mig-legend-item";
@@ -351,7 +359,7 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
     stage.appendChild(lg);
   }
 
-  if (!off(opts.strength) && D.strength?.length) {
+  if (opts.strength && !off(opts.strength) && D.strength?.length) {
     const st = document.createElement("div");
     st.className = "mig-strength";
     st.innerHTML = '<div class="mig-sec">What it fires on, by % of max</div>';
@@ -378,7 +386,6 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
     sc.redraw();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme", "saved-theme"] });
 
-  if (pinned >= 0) requestAnimationFrame(() => requestAnimationFrame(() => showTip(pinned)));
 }
 
 function splitLabel(s: string): string[] {

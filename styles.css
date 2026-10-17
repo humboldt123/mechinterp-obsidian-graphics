@@ -145,7 +145,7 @@
 .mig-legend-name b { font-weight: 500; }
 .mig-legend-name .mig-dim { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .mig-legend-desc { color: var(--mig-muted); font-size: 0.9em; margin-left: 15px; }
-.mig-lit-note { grid-column: 1 / -1; }
+.mig-lit-note { font-size: 0.85em; margin-top: 8px; color: var(--mig-muted); }
 .mig-lit-note i { background: #3b2a1e; }
 .theme-dark .mig-lit-note i, [saved-theme="dark"] .mig-lit-note i { background: #f3e3d3; }
 .mig-strength { margin-top: 12px; font-size: 0.82em; }

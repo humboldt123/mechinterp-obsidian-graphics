@@ -72,8 +72,12 @@ export function theme(el: HTMLElement): Theme {
 }
 
 /**
- * A canvas that tracks its box size and device pixel ratio. `draw` is called
- * with CSS-pixel width and height whenever either changes.
+ * A canvas that tracks its box size. `draw` is called with the canvas's
+ * layout width and height whenever they change.
+ *
+ * Drawing is scaled by the backing store's real size over the layout size,
+ * not by window.devicePixelRatio: under Obsidian's zoom or CSS zoom the two
+ * disagree, and the drawing would then fill only part of the canvas.
  */
 export function sizedCanvas(parent: HTMLElement, draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void) {
   const canvas = document.createElement("canvas");
@@ -81,24 +85,41 @@ export function sizedCanvas(parent: HTMLElement, draw: (ctx: CanvasRenderingCont
   const ctx = canvas.getContext("2d")!;
   let w = 0,
     h = 0;
+  const scale = () => [canvas.width / w, canvas.height / h] as const;
   const redraw = () => {
     if (!w || !h) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const d = window.devicePixelRatio || 1;
-    ctx.setTransform(d, 0, 0, d, 0, 0);
+    const [sx, sy] = scale();
+    ctx.setTransform(sx, 0, 0, sy, 0, 0);
     draw(ctx, w, h);
   };
   const resize = () => {
+    const cw = canvas.clientWidth,
+      ch = canvas.clientHeight;
+    if (!cw || !ch) return;
+    // Backing store at the on-screen pixel size, for sharp lines.
     const r = canvas.getBoundingClientRect();
     const d = window.devicePixelRatio || 1;
-    if (Math.round(r.width) === w && Math.round(r.height) === h && canvas.width === Math.round(r.width * d)) return;
-    w = Math.round(r.width);
-    h = Math.round(r.height);
-    canvas.width = Math.round(w * d);
-    canvas.height = Math.round(h * d);
+    const bw = Math.max(1, Math.round(r.width * d)),
+      bh = Math.max(1, Math.round(r.height * d));
+    if (cw === w && ch === h && canvas.width === bw && canvas.height === bh) return;
+    w = cw;
+    h = ch;
+    canvas.width = bw;
+    canvas.height = bh;
     redraw();
   };
+  // Zoom changes the pixel ratio without resizing anything.
+  const watchRatio = () => {
+    const mq = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    mq.addEventListener("change", function onChange() {
+      mq.removeEventListener("change", onChange);
+      if (canvas.isConnected) resize();
+      watchRatio();
+    });
+  };
+  watchRatio();
   // Obsidian builds blocks before attaching them (and re-attaches them in Live
   // Preview), so a detached canvas just waits for its next size.
   const ro = new ResizeObserver(() => {
@@ -113,7 +134,12 @@ export function sizedCanvas(parent: HTMLElement, draw: (ctx: CanvasRenderingCont
     if (canvas.isConnected) resize();
     if (w > 0 || ++tries > 100) clearInterval(poll);
   }, 200);
-  return { canvas, ctx, redraw, size: () => [w, h] as const };
+  /** Pointer position in the same units `draw` uses. */
+  const point = (e: MouseEvent) => {
+    const r = canvas.getBoundingClientRect();
+    return [((e.clientX - r.left) * w) / r.width, ((e.clientY - r.top) * h) / r.height] as const;
+  };
+  return { canvas, ctx, redraw, scale, point, size: () => [w, h] as const };
 }
 
 export function pct(f: number): string {
