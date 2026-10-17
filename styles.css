@@ -195,3 +195,18 @@
 .mig-ms-dist { height: 120px; margin-top: 8px; display: flex; flex-direction: column; }
 .mig-ms-dist .mig-ms-label { padding-left: 0; }
 .mig-ms-dist canvas { flex: 1; min-height: 0; }
+
+/* chat */
+.mig-chat { display: flex; flex-direction: column; gap: 4px; }
+.mig-msg { display: flex; flex-direction: column; align-items: flex-start; max-width: 80%; }
+.mig-msg.mig-me { align-self: flex-end; align-items: flex-end; }
+.mig-who { font-size: 0.75em; color: var(--mig-muted); margin: 8px 12px 2px; }
+.mig-bubble {
+  padding: 8px 14px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--mig-border);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.mig-me .mig-bubble { border-radius: 18px 18px 4px 18px; background: var(--mig-accent); color: var(--mig-bg); }
+.mig-me .mig-bubble a { color: inherit; text-decoration: underline; }

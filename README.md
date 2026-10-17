@@ -9,6 +9,7 @@ plugin the blocks degrade to readable code, so notes stay plain Markdown.
 | `neuron-text` | Text with per-token activations, reveal/swap buttons, comma meters | Goodfire's "pr" and Colorado figures, Anthropic's token highlighting |
 | `neuron-map` | Every strong firing of a neuron on a radial map; hover cards, group highlighting, optional legend and strength bars | Goodfire's "Five neurons in Qwen3-32B" |
 | `feature-card` | Feature dashboard: activation histogram, logit effects, top/subsampled activations | Anthropic's feature browser |
+| `chat` | A conversation as chat bubbles; `me:` names the right-hand speaker | iMessage-style transcripts |
 | `manifold-steer` | Two 3D spaces (behavior and activation), manifold vs. linear steering paths, output probabilities along the path | Goodfire's "Steering Along Manifolds" |
 
 See [`examples/gallery.md`](examples/gallery.md) for one of each.
@@ -92,6 +93,18 @@ Subsample interval 3
 
 Lines starting with `- ` are examples; any other line starts a section.
 Examples past `show` sit behind a "Show N more" button.
+
+### `chat`
+
+```chat
+me: Vish
+---
+Vish: one hot encoding works for as many tokens as you have…
+Claude: You're right to be concerned about efficiency…
+  an indented line continues the previous message
+```
+
+`me:` is drawn on the right (default: the first speaker).
 
 ### `manifold-steer`
 

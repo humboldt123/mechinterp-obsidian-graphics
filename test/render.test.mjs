@@ -47,3 +47,10 @@ test("feature card logits and hidden extras", () => {
   assert.match(html, /<div class="mig-ex" hidden>two/);
   assert.match(html, /Show 1 more/);
 });
+
+test("chat: speakers, continuation, me on the right", () => {
+  const html = renderBlock("chat", "me: Vish\n---\nVish: hi\nClaude: hello\n  more\nClaude: again", ctx);
+  assert.match(html, /mig-msg mig-me"><div class="mig-who">Vish<\/div><div class="mig-bubble">hi</);
+  assert.match(html, /hello<br>more/);
+  assert.equal((html.match(/mig-who/g) || []).length, 2);
+});

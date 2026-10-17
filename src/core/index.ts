@@ -1,3 +1,4 @@
+import { renderChat } from "./chat";
 import { renderFeatureCard } from "./featureCard";
 import { renderManifold, renderNeuronMap } from "./interactive";
 import { renderNeuronText } from "./neuronText";
@@ -11,6 +12,7 @@ export const BLOCKS: Record<string, (source: string, ctx: RenderContext) => stri
   "feature-card": (s) => renderFeatureCard(s),
   "neuron-map": renderNeuronMap,
   "manifold-steer": renderManifold,
+  chat: (s) => renderChat(s),
 };
 
 /** Option keys whose values are vault paths to data files. */
