@@ -1,0 +1,9 @@
+{
+  "id": "mechinterp-graphics",
+  "name": "Mechinterp Graphics",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Interpretability figures from code blocks: token activations, neuron firing maps, feature cards and manifold steering.",
+  "author": "Vishnu Menon",
+  "isDesktopOnly": false
+}
