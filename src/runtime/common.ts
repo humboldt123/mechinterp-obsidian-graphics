@@ -99,12 +99,20 @@ export function sizedCanvas(parent: HTMLElement, draw: (ctx: CanvasRenderingCont
     canvas.height = Math.round(h * d);
     redraw();
   };
+  // Obsidian builds blocks before attaching them (and re-attaches them in Live
+  // Preview), so a detached canvas just waits for its next size.
   const ro = new ResizeObserver(() => {
-    if (!canvas.isConnected) return ro.disconnect();
-    resize();
+    if (canvas.isConnected) resize();
   });
   ro.observe(canvas);
   requestAnimationFrame(resize);
+  // Fallback for hosts where the observer misses the attach: poll briefly
+  // until the canvas is in the page and has a size.
+  let tries = 0;
+  const poll = setInterval(() => {
+    if (canvas.isConnected) resize();
+    if (w > 0 || ++tries > 100) clearInterval(poll);
+  }, 200);
   return { canvas, ctx, redraw, size: () => [w, h] as const };
 }
 

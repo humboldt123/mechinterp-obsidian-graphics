@@ -100,6 +100,7 @@ export async function manifold(el: HTMLElement, opts: Opts, h: HydrateOptions) {
     let yaw = 0.6,
       pitch = 0.35;
     const sc = sizedCanvas(box, (ctx, w, hgt) => {
+      T = theme(el);
       const s = (Math.min(w, hgt) / 2 - 24) / rad;
       const cy_ = Math.cos(yaw),
         sy = Math.sin(yaw),
@@ -185,6 +186,7 @@ export async function manifold(el: HTMLElement, opts: Opts, h: HydrateOptions) {
     box.innerHTML = `<div class="mig-ms-label">${esc(m.name)} <span class="mig-dim">· output probabilities along the path</span></div>`;
     stage.appendChild(box);
     return sizedCanvas(box, (ctx, w, hgt) => {
+      T = theme(el);
       const series = m.dists[pair];
       const pl = 30,
         pr = 8,

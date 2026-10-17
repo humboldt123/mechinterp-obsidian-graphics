@@ -6,7 +6,7 @@ await fs.mkdir("dist", { recursive: true });
 
 // 1. Browser runtime for static sites: one IIFE that hydrates the page.
 const runtime = await esbuild.build({
-  stdin: { contents: 'import { autoHydrate } from "./src/runtime"; autoHydrate();', resolveDir: ".", loader: "ts" },
+  stdin: { contents: 'import { autoHydrate, hydrate } from "./src/runtime"; (window as any).MechinterpGraphics = { hydrate }; autoHydrate();', resolveDir: ".", loader: "ts" },
   bundle: true,
   format: "iife",
   minify: true,

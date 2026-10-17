@@ -205,6 +205,7 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
 
   const sc = sizedCanvas(wrap, (ctx, w, hgt) => {
     if (w !== W || !base) {
+      T = theme(el);
       W = w;
       const pad = w < 420 ? 16 : Math.min(150, w * 0.2);
       R = Math.max(80, Math.min(w / 2 - pad, hgt / 2 - 30));
@@ -334,7 +335,7 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
     D.cats.forEach((c, j) => {
       const item = document.createElement("div");
       item.className = "mig-legend-item";
-      item.innerHTML = `<div><i style="background:${c.col}"></i><b>${esc(c.name)}</b>${c.n ? ` <span class="mig-dim">· ${c.n.toLocaleString("en-US")}</span>` : ""}</div>${legendMode === "full" && c.desc ? `<div class="mig-legend-desc">${esc(c.desc)}</div>` : ""}`;
+      item.innerHTML = `<div class="mig-legend-name"><i style="background:${c.col}"></i><b>${esc(c.name)}</b>${c.n ? `<span class="mig-dim">${c.n.toLocaleString("en-US")}</span>` : ""}</div>${legendMode === "full" && c.desc ? `<div class="mig-legend-desc">${esc(c.desc)}</div>` : ""}`;
       item.addEventListener("mouseenter", () => {
         iso = j;
         base = null;
@@ -353,13 +354,13 @@ export async function neuronMap(el: HTMLElement, opts: Opts, h: HydrateOptions) 
   if (!off(opts.strength) && D.strength?.length) {
     const st = document.createElement("div");
     st.className = "mig-strength";
-    st.innerHTML = '<div class="mig-sec">What it fires on, by strength</div>';
+    st.innerHTML = '<div class="mig-sec">What it fires on, by % of max</div>';
     for (const row of D.strength) {
       const segs = Object.entries(row.share)
         .filter(([, v]) => v > 0)
         .map(([ci, v]) => `<i style="width:${(v * 100).toFixed(2)}%;background:${D.cats[Number(ci)]?.col ?? "#999"}" title="${esc(D.cats[Number(ci)]?.name ?? "")}: ${pct(v)}"></i>`)
         .join("");
-      st.innerHTML += `<div class="mig-srow"><span>${pct(row.lo)}–${pct(row.hi)} of max</span><span class="mig-sbar">${segs}</span><span class="mig-dim">${row.n.toLocaleString("en-US")}</span></div>`;
+      st.innerHTML += `<div class="mig-srow"><span>${Math.round(row.lo * 100)}–${Math.round(row.hi * 100)}%</span><span class="mig-sbar">${segs}</span><span class="mig-dim">${row.n.toLocaleString("en-US")}</span></div>`;
     }
     stage.appendChild(st);
   }
