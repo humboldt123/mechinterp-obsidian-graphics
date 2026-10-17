@@ -106,9 +106,10 @@ Claude: You're right to be concerned about efficiency…
 ```
 
 `me:` is drawn on the right (default: the first speaker). Bubble colors:
-`colors: Claude=orange, Vish=blue, Bob=#2f6f4e` with orange (Anthropic's
-`#d97757`), red, blue, green, purple, gray, accent, or any CSS color. By default
-Claude is orange, `me` is the theme accent and everyone else is gray. The
+`colors: Claude=orange, Vish=ink, Bob=#2f6f4e` with orange (Anthropic's
+`#d97757`), red, blue, green, purple, gray, accent, ink, or any CSS color.
+Colors draw as a pale tint with colored text; `ink` uses the theme's text color
+as the bubble. By default `me` is ink, Claude orange and everyone else gray. The
 `---` line is optional here: only `me`, `colors` and `caption` count as options.
 
 ### `manifold-steer`
